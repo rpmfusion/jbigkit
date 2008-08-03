@@ -1,0 +1,88 @@
+--- jbigkit/pbmtools/Makefile.shlib	2003-06-11 18:27:22.000000000 +0100
++++ jbigkit/pbmtools/Makefile	2006-09-12 14:06:14.000000000 +0100
+@@ -9,19 +9,19 @@ CFLAGS = -g -Wall -ansi -pedantic -I../l
+ 
+ .SUFFIXES: .1 .5 .txt $(SUFFIXES)
+ 
+-all: pbmtojbg jbgtopbm pbmtojbg.txt jbgtopbm.txt pbm.txt pgm.txt
++all: pbmtojbg jbgtopbm # pbmtojbg.txt jbgtopbm.txt pbm.txt pgm.txt
+ 
+-pbmtojbg: pbmtojbg.o ../libjbig/libjbig.a
++pbmtojbg: pbmtojbg.o ../libjbig/libjbig.so.$(VERSION)
+ 	$(CC) $(CFLAGS) -o pbmtojbg pbmtojbg.o -L../libjbig -ljbig
+ 
+-jbgtopbm: jbgtopbm.o ../libjbig/libjbig.a
++jbgtopbm: jbgtopbm.o ../libjbig/libjbig.so.$(VERSION)
+ 	$(CC) $(CFLAGS) -o jbgtopbm jbgtopbm.o -L../libjbig -ljbig
+ 
+ jbgtopbm.o: jbgtopbm.c ../libjbig/jbig.h
+ pbmtojbg.o: pbmtojbg.c ../libjbig/jbig.h
+ 
+-../libjbig/libjbig.a: ../libjbig/jbig.c ../libjbig/jbig.h
+-	cd ../libjbig ; make libjbig.a
++../libjbig/libjbig.so.$(VERSION): ../libjbig/jbig.c ../libjbig/jbig.h
++	cd ../libjbig ; make libjbig.so.$(VERSION)
+ 
+ test: pbmtojbg jbgtopbm
+ 	make IMG=ccitt1     OPTIONSJ=      OPTIONSP=       dotest1
+--- jbigkit/libjbig/Makefile.shlib	2004-06-08 15:40:06.000000000 +0100
++++ jbigkit/libjbig/Makefile	2006-09-12 14:07:26.000000000 +0100
+@@ -6,19 +6,24 @@
+ 
+ # Options for the compiler: A high optimization level is suggested
+ CFLAGS = -O -Wall -ansi -pedantic
++PICFLAGS := -fPIC -DPIC
+ 
+-all: libjbig.a tstcodec
++all: libjbig.so.$(VERSION) tstcodec
+ 
+-tstcodec: tstcodec.c jbig.c jbig.h jbig_tab.o
+-	$(CC) $(CFLAGS) -o tstcodec -DTEST_CODEC tstcodec.c jbig.c \
+-	jbig_tab.o
+-
+-libjbig.a: jbig.o jbig_tab.o
+-	rm -f libjbig.a
+-	ar rc libjbig.a jbig.o jbig_tab.o
+-	-ranlib libjbig.a
++tstcodec: tstcodec.c jbig.c jbig_tab.c
++	$(CC) $(CFLAGS) -DTEST_CODEC -o $@ $^
++
++libjbig.so.$(VERSION): jbig.o jbig_tab.o jbig.h libjbig.so
++	$(CC) -shared -Wl,-soname,$@ -o $@ jbig.o jbig_tab.o
++
++libjbig.so:
++	ln -sf $@.$(VERSION) $@
+ 
+ jbig.o: jbig.c jbig.h
++	$(CC) $(CFLAGS) $(PICFLAGS) -c -o $@ $<
++
++jbig_tab.o: jbig_tab.c
++	$(CC) $(CFLAGS) $(PICFLAGS) -c -o $@ $<
+ 
+ test: tstcodec
+ 	./tstcodec
+@@ -27,4 +32,4 @@ t82test.pbm: tstcodec
+ 	./tstcodec $@
+ 
+ clean:
+-	rm -f *.o *~ core gmon.out dbg_d\=??.pbm tstcodec t82test.pbm
++	rm -f *.o *~ core gmon.out dbg_d\=??.pbm tstcodec t82test.pbm libjbig.so*
+--- jbigkit/Makefile.shlib	2004-06-11 19:05:26.000000000 +0100
++++ jbigkit/Makefile	2006-09-12 14:06:14.000000000 +0100
+@@ -11,6 +11,7 @@ CCFLAGS = -O2 -W
+ CFLAGS = $(CCFLAGS) -I../libjbig
+ 
+ VERSION=1.6
++export VERSION
+ 
+ all: lib pbm
+ 	@echo "Enter 'make test' in order to start some automatic tests."
+@@ -23,7 +24,7 @@ pbm: lib
+ 
+ test: lib pbm
+ 	(cd libjbig;  make "CC=$(CC)" "CFLAGS=$(CFLAGS)" test)
+-	(cd pbmtools; make "CC=$(CC)" "CFLAGS=$(CFLAGS)" test)
++	(cd pbmtools; LD_LIBRARY_PATH=../libjbig make "CC=$(CC)" "CFLAGS=$(CFLAGS)" test)
+ 
+ clean:
+ 	rm -f *~ core
