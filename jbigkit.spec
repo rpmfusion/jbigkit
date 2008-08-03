@@ -1,6 +1,6 @@
 Name:           jbigkit
 Version:        1.6
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        JBIG1 lossless image compression tools
 
 Group:          Applications/Multimedia
@@ -92,6 +92,9 @@ make test
 
 
 %changelog
+* Sun Aug 03 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 1.6-3
+- rebuild
+
 * Sun Oct  1 2006 David Woodhouse <dwmw2@infradead.org> 1.6-2
 - Review fixes
 
