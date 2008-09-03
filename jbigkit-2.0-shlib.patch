@@ -1,6 +1,12 @@
 --- jbigkit/pbmtools/Makefile.shlib	2008-08-25 23:26:39.000000000 +0100
-+++ jbigkit/pbmtools/Makefile	2008-09-03 16:22:02.000000000 +0100
-@@ -10,18 +10,18 @@ CFLAGS = -g -Wall -ansi -pedantic -I../l
++++ jbigkit/pbmtools/Makefile	2008-09-03 16:41:20.000000000 +0100
+@@ -5,23 +5,23 @@
+ CC = gcc
+ 
+ # Options for the compiler
+-CFLAGS = -g -Wall -ansi -pedantic -I../libjbig # --coverage
++CFLAGS ?= -g -Wall -ansi -pedantic -I../libjbig # --coverage
+ 
  .SUFFIXES: .1 .5 .txt $(SUFFIXES)
  
  all: pbmtojbg jbgtopbm pbmtojbg85 jbgtopbm85 \
@@ -43,7 +49,7 @@
  test: test82 test85
  
 --- jbigkit/libjbig/Makefile.shlib	2008-08-30 18:20:52.000000000 +0100
-+++ jbigkit/libjbig/Makefile	2008-09-03 16:22:02.000000000 +0100
++++ jbigkit/libjbig/Makefile	2008-09-03 16:40:43.000000000 +0100
 @@ -5,25 +5,27 @@
  CC = gcc
  
@@ -77,10 +83,10 @@
 -	ar rc libjbig85.a jbig85.o jbig_ar.o
 -	-ranlib libjbig85.a
 +libjbig.so.$(VERSION): jbig.o jbig_ar.o
-+	$(CC) -shared -Wl,-soname,$@ -o $@ $^
++	$(CC) $(CFLAGS) -shared -Wl,-soname,$@ -o $@ $^
 +
 +libjbig85.so.$(VERSION): jbig85.o jbig_ar.o
-+	$(CC) -shared -Wl,-soname,$@ -o $@ $^
++	$(CC) $(CFLAGS) -shared -Wl,-soname,$@ -o $@ $^
 +
 +jbig.o jbig85.o jbig_ar.o: CFLAGS += $(PICFLAGS)
  
@@ -104,7 +110,7 @@
 -	rm -f tstcodec tstcodec85
 +	rm -f tstcodec tstcodec85 *.so *.so.$(VERSION)
 --- jbigkit/Makefile.shlib	2008-08-30 21:40:22.000000000 +0100
-+++ jbigkit/Makefile	2008-09-03 16:24:10.000000000 +0100
++++ jbigkit/Makefile	2008-09-03 16:40:43.000000000 +0100
 @@ -11,24 +11,25 @@ CCFLAGS = -O2 -W
  CFLAGS = $(CCFLAGS) -I../libjbig
  
