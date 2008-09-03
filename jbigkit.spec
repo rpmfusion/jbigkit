@@ -1,13 +1,13 @@
 Name:           jbigkit
-Version:        1.6
-Release:        3%{?dist}
+Version:        2.0
+Release:        1%{?dist}
 Summary:        JBIG1 lossless image compression tools
 
 Group:          Applications/Multimedia
 License:        GPL
 URL:            http://www.cl.cam.ac.uk/~mgk25/jbigkit/
 Source0:        http://www.cl.cam.ac.uk/~mgk25/download/%{name}-%{version}.tar.gz
-Patch0:         jbigkit-1.6-shlib.patch
+Patch0:         jbigkit-2.0-shlib.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %package libs
@@ -59,11 +59,15 @@ mkdir -p $RPM_BUILD_ROOT%{_bindir}
 mkdir -p $RPM_BUILD_ROOT%{_mandir}/man1
 
 install -p -m0755 libjbig/libjbig.so.%{version} $RPM_BUILD_ROOT/%{_libdir}
+install -p -m0755 libjbig/libjbig85.so.%{version} $RPM_BUILD_ROOT/%{_libdir}
 ln -sf libjbig.so.%{version} $RPM_BUILD_ROOT/%{_libdir}/libjbig.so
+ln -sf libjbig85.so.%{version} $RPM_BUILD_ROOT/%{_libdir}/libjbig85.so
 
 install -p -m0644 libjbig/jbig.h $RPM_BUILD_ROOT%{_includedir}
+install -p -m0644 libjbig/jbig85.h $RPM_BUILD_ROOT%{_includedir}
 
 install -p -m0755 pbmtools/???to??? $RPM_BUILD_ROOT%{_bindir}
+install -p -m0755 pbmtools/???to???85 $RPM_BUILD_ROOT%{_bindir}
 install -p -m0644 pbmtools/*.1 $RPM_BUILD_ROOT%{_mandir}/man1
 
 %clean
@@ -78,21 +82,23 @@ make test
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/???to???
+%{_bindir}/???to*
 %{_mandir}/man1/*
 
-
 %files libs
-%{_libdir}/libjbig.so.%{version}
+%{_libdir}/libjbig*.so.%{version}
 %doc COPYING ANNOUNCE TODO INSTALL CHANGES
 
 %files devel
-%{_libdir}/libjbig.so
-%{_includedir}/jbig.h
+%{_libdir}/libjbig*.so
+%{_includedir}/jbig*.h
 
-
+# Don't obfuscate email address here, please.
 %changelog
-* Sun Aug 03 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 1.6-3
+* Wed Sep 03 2008 David Woodhouse <dwmw2@infradead.org> 2.0-1
+- Update to 2.0
+
+* Sun Aug 03 2008 Thorsten Leemhuis <fedora@leemhuis.info> - 1.6-3
 - rebuild
 
 * Sun Oct  1 2006 David Woodhouse <dwmw2@infradead.org> 1.6-2
