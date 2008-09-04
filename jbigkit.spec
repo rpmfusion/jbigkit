@@ -1,6 +1,6 @@
 Name:           jbigkit
 Version:        2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        JBIG1 lossless image compression tools
 
 Group:          Applications/Multimedia
@@ -65,6 +65,7 @@ ln -sf libjbig85.so.%{version} $RPM_BUILD_ROOT/%{_libdir}/libjbig85.so
 
 install -p -m0644 libjbig/jbig.h $RPM_BUILD_ROOT%{_includedir}
 install -p -m0644 libjbig/jbig85.h $RPM_BUILD_ROOT%{_includedir}
+install -p -m0644 libjbig/jbig_ar.h $RPM_BUILD_ROOT%{_includedir}
 
 install -p -m0755 pbmtools/???to??? $RPM_BUILD_ROOT%{_bindir}
 install -p -m0755 pbmtools/???to???85 $RPM_BUILD_ROOT%{_bindir}
@@ -93,8 +94,11 @@ make test
 %{_libdir}/libjbig*.so
 %{_includedir}/jbig*.h
 
-# Don't obfuscate email address here, please.
+# Don't obfuscate email addresses here, please.
 %changelog
+* Fri Sep 05 2008 David Woodhouse <dwmw2@infradead.org> 2.0-2
+- Add missing jbig_ar.h
+
 * Wed Sep 03 2008 David Woodhouse <dwmw2@infradead.org> 2.0-1
 - Update to 2.0
 
