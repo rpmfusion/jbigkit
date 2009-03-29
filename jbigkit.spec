@@ -1,6 +1,6 @@
 Name:           jbigkit
 Version:        2.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        JBIG1 lossless image compression tools
 
 Group:          Applications/Multimedia
@@ -96,6 +96,9 @@ make test
 
 # Don't obfuscate email addresses here, please.
 %changelog
+* Sun Mar 29 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 2.0-3
+- rebuild for new F11 features
+
 * Fri Sep 05 2008 David Woodhouse <dwmw2@infradead.org> 2.0-2
 - Add missing jbig_ar.h
 
