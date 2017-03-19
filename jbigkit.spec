@@ -1,6 +1,6 @@
 Name:           jbigkit
 Version:        2.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        JBIG1 lossless image compression tools
 
 Group:          Applications/Multimedia
@@ -96,6 +96,9 @@ make test
 
 # Don't obfuscate email addresses here, please.
 %changelog
+* Sun Mar 19 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 2.0-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Sun Mar 03 2013 Nicolas Chauvet <kwizart@gmail.com> - 2.0-5
 - Mass rebuilt for Fedora 19 Features
 
